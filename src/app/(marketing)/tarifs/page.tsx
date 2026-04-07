@@ -1,14 +1,41 @@
-import { PLANS } from "@/lib/types";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Tarifs",
-  description: "Choisissez le plan ReleveFacile adapte a vos besoins. Gratuit, Pro ou Cabinet.",
-};
+import { PLANS } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const planOrder = ["free", "pro", "cabinet"] as const;
 
 export default function PricingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+
+  async function handleSubscribe(plan: "pro" | "cabinet") {
+    setLoading(plan);
+    try {
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        router.push("/inscription");
+        return;
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoading(null);
+    }
+  }
+
   return (
     <main className="max-w-5xl mx-auto py-12 px-4">
       <div className="text-center mb-12">
@@ -56,13 +83,21 @@ export default function PricingPage() {
               </ul>
 
               <button
-                className={`w-full py-2 rounded-lg font-medium transition-colors ${
+                onClick={() => {
+                  if (key === "free") {
+                    router.push("/inscription");
+                  } else {
+                    handleSubscribe(key);
+                  }
+                }}
+                disabled={loading === key}
+                className={`w-full py-2 rounded-lg font-medium transition-colors disabled:opacity-50 ${
                   isPopular
                     ? "bg-brand-600 text-white hover:bg-brand-700"
                     : "bg-gray-100 text-gray-800 hover:bg-gray-200"
                 }`}
               >
-                {key === "free" ? "Commencer" : "S'abonner"}
+                {loading === key ? "Redirection..." : key === "free" ? "Commencer" : "S'abonner"}
               </button>
             </div>
           );
