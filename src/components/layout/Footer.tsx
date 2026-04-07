@@ -32,7 +32,9 @@ export function Footer() {
           </div>
           <div>
             <p className="font-medium mb-2">Contact</p>
-            <p className="text-gray-500">contact@relevefacile.com</p>
+            <a href="mailto:contact@relevefacile.com" className="text-gray-500 hover:text-gray-700">
+              contact@relevefacile.com
+            </a>
           </div>
         </div>
         <div className="border-t mt-6 pt-4 text-center text-xs text-gray-400">

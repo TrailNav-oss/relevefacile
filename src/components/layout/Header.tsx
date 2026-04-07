@@ -50,6 +50,9 @@ export function Header() {
               <Link href="/historique" className="text-gray-600 hover:text-gray-900">
                 Historique
               </Link>
+              <Link href="/compte" className="text-gray-600 hover:text-gray-900">
+                Compte
+              </Link>
               <button onClick={handleLogout} className="text-gray-500 hover:text-gray-900">
                 Deconnexion
               </button>
@@ -97,6 +100,9 @@ export function Header() {
             <>
               <Link href="/convertir" className="block py-1 text-gray-600" onClick={() => setMenuOpen(false)}>
                 Convertir
+              </Link>
+              <Link href="/compte" className="block py-1 text-gray-600" onClick={() => setMenuOpen(false)}>
+                Compte
               </Link>
               <button onClick={handleLogout} className="block py-1 text-gray-500">
                 Deconnexion

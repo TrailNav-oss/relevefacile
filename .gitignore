@@ -60,3 +60,4 @@ parser/.venv/
 *.swo
 
 .vercel
+.env.vercel

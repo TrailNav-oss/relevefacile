@@ -83,6 +83,16 @@ export async function POST(request: Request) {
     return NextResponse.json(result);
   } catch (err) {
     console.error("Conversion error:", err);
-    return NextResponse.json({ error: "Erreur lors de l'analyse du PDF. Verifiez que le fichier est un releve bancaire valide." }, { status: 500 });
+    const message = err instanceof Error ? err.message : "";
+    if (message.includes("unreachable") || message.includes("502") || message.includes("503")) {
+      return NextResponse.json(
+        { error: "Le service d'analyse est temporairement indisponible. Reessayez dans quelques instants." },
+        { status: 503 },
+      );
+    }
+    return NextResponse.json(
+      { error: "Erreur lors de l'analyse du PDF. Verifiez que le fichier est un releve bancaire valide." },
+      { status: 500 },
+    );
   }
 }

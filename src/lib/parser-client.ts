@@ -32,11 +32,34 @@ function transformParseResult(raw: any): ParseResult {
   };
 }
 
+/**
+ * Fetch with one automatic retry for Fly.io cold starts.
+ * First attempt may fail if the machine is waking up (auto_stop_machines).
+ */
+async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url, init);
+      if (response.ok || attempt === retries) return response;
+      // Retry on 502/503 (cold start / machine spinning up)
+      if (response.status === 502 || response.status === 503) {
+        await new Promise((r) => setTimeout(r, 2000));
+        continue;
+      }
+      return response;
+    } catch (err) {
+      if (attempt === retries) throw err;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+  throw new Error("Parser service unreachable after retries");
+}
+
 export async function detectBank(pdfBuffer: Uint8Array): Promise<DetectResult> {
   const formData = new FormData();
   formData.append("file", new File([new Uint8Array(pdfBuffer)], "statement.pdf", { type: "application/pdf" }));
 
-  const response = await fetch(`${PARSER_SERVICE_URL}/detect`, {
+  const response = await fetchWithRetry(`${PARSER_SERVICE_URL}/detect`, {
     method: "POST",
     headers: { "X-Api-Key": PARSER_API_KEY },
     body: formData,
@@ -57,7 +80,7 @@ export async function parsePdf(pdfBuffer: Uint8Array, bankSlug?: string): Promis
     formData.append("bank_slug", bankSlug);
   }
 
-  const response = await fetch(`${PARSER_SERVICE_URL}/parse`, {
+  const response = await fetchWithRetry(`${PARSER_SERVICE_URL}/parse`, {
     method: "POST",
     headers: { "X-Api-Key": PARSER_API_KEY },
     body: formData,
