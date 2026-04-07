@@ -13,7 +13,8 @@ function formatDateFR(iso: string): string {
   return `${d}/${m}/${y}`;
 }
 
-function formatAmountFR(amount: number): string {
+function formatAmountFR(amount: number | null | undefined): string {
+  if (amount == null) return "";
   return amount.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
 }
 

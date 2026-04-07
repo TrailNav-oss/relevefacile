@@ -190,8 +190,8 @@ export default function ConvertPage() {
               <p className="text-xs text-gray-500">Total debits</p>
               <p className="font-bold text-sm text-red-600">
                 {result.transactions
-                  .filter((t) => t.amount < 0)
-                  .reduce((sum, t) => sum + t.amount, 0)
+                  .filter((t) => (t.amount ?? 0) < 0)
+                  .reduce((sum, t) => sum + (t.amount ?? 0), 0)
                   .toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR
               </p>
             </div>
@@ -199,8 +199,8 @@ export default function ConvertPage() {
               <p className="text-xs text-gray-500">Total credits</p>
               <p className="font-bold text-sm text-green-600">
                 +{result.transactions
-                  .filter((t) => t.amount > 0)
-                  .reduce((sum, t) => sum + t.amount, 0)
+                  .filter((t) => (t.amount ?? 0) > 0)
+                  .reduce((sum, t) => sum + (t.amount ?? 0), 0)
                   .toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR
               </p>
             </div>
