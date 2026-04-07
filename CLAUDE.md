@@ -380,13 +380,42 @@ La logique de gating est dans :
 npx vitest run
 # Teste: BOM, separateur ;, dates DD/MM/YYYY, virgule decimale, escape CSV, watermark, CRLF
 
-# Parser Python — 18 tests
+# Parser Python — 75 tests
 cd parser && python -m pytest -v
-# Teste: parse_french_amount (12 cas), detection BNP (3 cas), health + auth (3 cas)
+# Teste: 10 banques (detection + parsing), parse_french_amount, health + auth
 
 # Validation complete
 npm run check   # tsc + eslint + vitest
 ```
+
+---
+
+## Mode demo / test
+
+### PDF de demo
+Un releve BNP synthetique est disponible dans `public/demo/releve-demo-bnp.pdf`.
+Sur la page `/convertir`, un lien "Essayez avec un releve de demonstration" le charge automatiquement.
+
+### Stripe test mode
+Quand `STRIPE_SECRET_KEY` commence par `sk_test_`, un bandeau jaune s'affiche en haut du site :
+"Mode test — les paiements ne sont pas reels."
+Carte de test : `4242 4242 4242 4242`, date future, CVC quelconque.
+
+### Bypass quota (DEMO_MODE)
+Mettre `DEMO_MODE=true` dans les env vars pour desactiver la limite de 3 conversions/mois du plan gratuit.
+Utile pour tester le flow en boucle sans se retrouver bloque.
+
+### Compte de test (seed user)
+Creer un compte test via le dashboard Supabase :
+
+1. Aller dans Supabase Dashboard > Authentication > Users > Add User
+2. Email : `test@relevefacile.com`, mot de passe : `test1234!`
+3. Cocher "Auto Confirm User" (pas besoin de verifier l'email)
+4. Le trigger `on_auth_user_created` cree automatiquement un profil (plan `free`)
+5. Pour tester le plan Pro, modifier le profil dans la table `profiles` :
+   ```sql
+   UPDATE profiles SET plan = 'pro' WHERE email = 'test@relevefacile.com';
+   ```
 
 ---
 
@@ -405,20 +434,21 @@ npm run check   # tsc + eslint + vitest
 - [x] Page historique
 - [x] Page compte
 - [x] CI GitHub Actions
-- [x] 25 tests (7 Vitest + 18 pytest)
+- [x] 82 tests (7 Vitest + 75 pytest)
 - [x] Supabase projet cree + 4 migrations appliquees
 - [x] Sentry 3-file config
+- [x] 10 parsers bancaires (BNP, CA, SG, CE, CM, CIC, LBP, LCL, Boursorama, BP)
+- [x] Script generate_test_pdfs.py (reportlab) — 10 PDFs synthetiques
+- [x] Deploiement Vercel (relevefacile.vercel.app)
+- [x] Services externes configures (Supabase, Stripe, Sentry, Fly.io)
+- [x] OG image dynamique + meta tags complets + Twitter card
+- [x] Pages 404 et 500 en francais
+- [x] Plausible Analytics (cookieless)
+- [x] Mode demo/test (PDF demo, banner Stripe test, bypass quota, seed user doc)
+- [x] Fix snake_case/camelCase entre parser Python et frontend TS
 
-### A faire — services externes (config manuelle)
-- [ ] Recuperer `SUPABASE_SERVICE_ROLE_KEY` → Supabase Dashboard > Settings > API
-- [ ] Creer le projet Sentry `relevefacile` dans l'org `trailnav` → mettre le DSN
-- [ ] Creer le compte Stripe → produits Pro (9,90 EUR/mois) et Cabinet (29 EUR/mois) → mettre les price IDs
-- [ ] `npx vercel link` pour connecter le frontend
-- [ ] `cd parser && fly launch` pour deployer le parser
-- [ ] Acheter le domaine `relevefacile.com`
-
-### A faire — code
-- [ ] Parsers supplementaires : Credit Agricole, Societe Generale, LCL, Banque Populaire, Caisse d'Epargne, Credit Mutuel, La Banque Postale, Boursorama, Fortuneo, Hello Bank, CIC
+### A faire — post-launch
+- [ ] Parsers supplementaires : Fortuneo, Hello Bank
 - [ ] Export OFX (XML template pour logiciels comptables)
 - [ ] Page /abonnement (redirect vers Stripe portal)
 - [ ] Page /api-keys (generation et gestion de cles API pour plan Cabinet)
@@ -427,15 +457,14 @@ npm run check   # tsc + eslint + vitest
 - [ ] Enrichir les FAQ des pages SEO banques
 - [ ] JSON-LD structuredData sur les pages banques et FAQ
 - [ ] OG images dynamiques par banque
-- [ ] Script generate-test-pdf.py (reportlab) pour creer des PDFs synthetiques de test
 
 ### A faire — polish
 - [ ] Ajouter les logos SVG des banques dans public/banks/
-- [ ] Ameliorer le BNP parser avec de vrais PDFs (le parser actuel est base sur des heuristiques)
+- [ ] Ameliorer les parsers avec de vrais PDFs (les parsers actuels sont bases sur des heuristiques)
 - [ ] Responsive mobile de la page /convertir (le tableau TransactionPreview)
 - [ ] Animations de chargement / transitions
 - [ ] Google Search Console verification
-- [ ] Plausible Analytics ou Vercel Analytics
+- [ ] Acheter le domaine `relevefacile.com`
 
 ---
 

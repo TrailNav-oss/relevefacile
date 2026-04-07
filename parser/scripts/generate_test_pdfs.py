@@ -389,12 +389,49 @@ def generate_banque_populaire():
 
 
 # ---------------------------------------------------------------------------
+# BNP Paribas
+# ---------------------------------------------------------------------------
+
+def generate_bnp_paribas(output_dir: str | None = None):
+    dest = output_dir or FIXTURES_DIR
+    path = os.path.join(dest, "bnp_paribas.pdf")
+    c = canvas.Canvas(path, pagesize=A4)
+
+    y = _draw_header(c, [
+        ("Helvetica-Bold", 16, "BNP PARIBAS"),
+        ("Helvetica", 11, "Relevé de compte"),
+        ("Helvetica", 10, "www.bnpparibas.net"),
+        ("Helvetica", 10, ""),
+        ("Helvetica", 10, "Compte N° 0001 00045 12345678901 12"),
+        ("Helvetica", 10, "Titulaire : M. JEAN DUPONT"),
+        ("Helvetica", 10, "Période du 01/03/2025 au 31/03/2025"),
+    ], H - 50)
+
+    data = [
+        ["Date", "Date val.", "Libellé", "Débit", "Crédit"],
+        ["01/03", "01/03", "SOLDE PRECEDENT", "", "1 500,00"],
+        ["03/03", "03/03", "PAIEMENT CB MONOPRIX", "42,30", ""],
+        ["07/03", "07/03", "PRELEVEMENT EDF", "89,10", ""],
+        ["10/03", "10/03", "VIR SALAIRE MARS ACME SARL", "", "2 800,00"],
+        ["15/03", "15/03", "RETRAIT DAB BNP 15/03", "60,00", ""],
+        ["20/03", "22/03", "CB AMAZON PAYMENTS", "32,99", ""],
+        ["25/03", "25/03", "VIR RECU REMBOURSEMENT SECU", "", "18,50"],
+        ["31/03", "31/03", "NOUVEAU SOLDE", "", "4 094,11"],
+    ]
+
+    _draw_table(c, data, y - 20)
+    c.save()
+    print(f"  OK {path}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 def main():
     os.makedirs(FIXTURES_DIR, exist_ok=True)
     print("Generating test PDFs...")
+    generate_bnp_paribas()
     generate_credit_agricole()
     generate_societe_generale()
     generate_caisse_epargne()
@@ -404,7 +441,7 @@ def main():
     generate_lcl()
     generate_boursorama()
     generate_banque_populaire()
-    print(f"\nDone — {9} PDFs written to {FIXTURES_DIR}")
+    print(f"\nDone — {10} PDFs written to {FIXTURES_DIR}")
 
 
 if __name__ == "__main__":

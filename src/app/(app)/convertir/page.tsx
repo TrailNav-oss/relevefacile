@@ -108,6 +108,24 @@ export default function ConvertPage() {
 
       <UploadZone onFileSelected={handleFileSelected} loading={loading} />
 
+      {!result && !loading && (
+        <p className="mt-3 text-center text-sm text-gray-400">
+          Pas de releve sous la main ?{" "}
+          <button
+            type="button"
+            onClick={async () => {
+              const res = await fetch("/demo/releve-demo-bnp.pdf");
+              const blob = await res.blob();
+              const file = new File([blob], "releve-demo-bnp.pdf", { type: "application/pdf" });
+              handleFileSelected(file);
+            }}
+            className="text-brand-600 hover:underline font-medium"
+          >
+            Essayez avec un releve de demonstration
+          </button>
+        </p>
+      )}
+
       {error && (
         <div className="mt-4 bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
           {error}
