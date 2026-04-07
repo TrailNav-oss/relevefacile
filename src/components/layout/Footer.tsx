@@ -20,6 +20,9 @@ export function Footer() {
             <Link href="/faq" className="block text-gray-500 hover:text-gray-700 mb-1">
               FAQ
             </Link>
+            <Link href="/guides" className="block text-gray-500 hover:text-gray-700 mb-1">
+              Guides
+            </Link>
           </div>
           <div>
             <p className="font-medium mb-2">Legal</p>

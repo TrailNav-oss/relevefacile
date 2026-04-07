@@ -304,8 +304,35 @@ export const BANKS: Record<string, Bank> = {
     logo: "/banks/credit-mutuel.svg",
     isSupported: true,
     seoTitle: "Convertir un releve Credit Mutuel en Excel & CSV",
-    seoDescription: "Convertissez vos releves Credit Mutuel PDF en Excel et CSV.",
-    faq: [],
+    seoDescription:
+      "Convertissez vos releves Credit Mutuel PDF en Excel et CSV en quelques secondes. Compatible avec toutes les federations regionales (Arkea, Alliance Federale). Extraction automatique des operations.",
+    faq: [
+      {
+        question: "Comment convertir un releve Credit Mutuel en Excel ?",
+        answer:
+          "Deposez votre releve Credit Mutuel au format PDF sur ReleveFacile. L'outil reconnait automatiquement le format Credit Mutuel et extrait chaque operation (date, libelle, debit, credit) pour generer un fichier Excel ou CSV pret a etre importe dans votre logiciel comptable.",
+      },
+      {
+        question: "Les releves de toutes les federations Credit Mutuel sont-ils compatibles ?",
+        answer:
+          "Oui, ReleveFacile gere les releves des differentes federations du Credit Mutuel : Credit Mutuel de Bretagne et du Sud-Ouest (Arkea), Credit Mutuel Alliance Federale (Centre Est Europe, Nord Europe, etc.), et Credit Mutuel Ocean. Les variations de format entre federations sont detectees automatiquement.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis le Credit Mutuel en ligne ?",
+        answer:
+          "Connectez-vous sur creditmutuel.fr (ou le site de votre federation, comme cmb.fr pour le Credit Mutuel de Bretagne). Allez dans Comptes > Releves en ligne > Releves de compte. Selectionnez le mois et cliquez sur le lien PDF pour telecharger votre releve.",
+      },
+      {
+        question: "Quels types de releves Credit Mutuel sont pris en charge ?",
+        answer:
+          "ReleveFacile est compatible avec les releves de compte courant, les releves de compte professionnel, les releves de Livret Bleu, et les releves de compte sur Livret Credit Mutuel. Les releves mensuels et trimestriels sont tous geres.",
+      },
+      {
+        question: "Quelle est la difference entre les releves Credit Mutuel et CIC ?",
+        answer:
+          "Le Credit Mutuel et le CIC font partie du meme groupe (Credit Mutuel Alliance Federale), mais leurs releves PDF utilisent des mises en page legerement differentes. ReleveFacile detecte automatiquement s'il s'agit d'un releve Credit Mutuel ou CIC et applique le bon extracteur pour chaque format.",
+      },
+    ],
   },
   fortuneo: {
     slug: "fortuneo",
@@ -314,8 +341,35 @@ export const BANKS: Record<string, Bank> = {
     logo: "/banks/fortuneo.svg",
     isSupported: true,
     seoTitle: "Convertir un releve Fortuneo en Excel & CSV",
-    seoDescription: "Convertissez vos releves Fortuneo PDF en Excel et CSV.",
-    faq: [],
+    seoDescription:
+      "Convertissez vos releves Fortuneo Banque PDF en Excel et CSV en quelques secondes. Extraction automatique des transactions, compatible compte courant, bourse et assurance-vie.",
+    faq: [
+      {
+        question: "Comment convertir un releve Fortuneo en Excel ?",
+        answer:
+          "Deposez votre releve Fortuneo PDF sur ReleveFacile. Notre outil detecte automatiquement le format Fortuneo et extrait toutes vos operations bancaires pour generer un fichier Excel ou CSV, avec la date, le libelle et le montant de chaque transaction.",
+      },
+      {
+        question: "Quels types de releves Fortuneo sont pris en charge ?",
+        answer:
+          "ReleveFacile est compatible avec les releves de compte courant Fortuneo (Gold, Fosfo), les releves de Livret+, et les releves de compte joint. Les releves de compte-titres et d'assurance-vie ne sont pas encore pris en charge car leur format differe des releves bancaires classiques.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis Fortuneo ?",
+        answer:
+          "Connectez-vous sur fortuneo.fr, puis allez dans Mes Comptes > Documents > Releves de compte. Selectionnez le mois souhaite et cliquez sur l'icone PDF pour telecharger. Vous pouvez egalement acceder a vos releves depuis l'application mobile Fortuneo.",
+      },
+      {
+        question: "Fortuneo propose deja un export, pourquoi utiliser ReleveFacile ?",
+        answer:
+          "L'export natif de Fortuneo (QIF, OFX) est limite aux operations recentes et son format peut poser des problemes de compatibilite avec certains logiciels comptables francais. ReleveFacile genere un fichier au format francais (separateur point-virgule, dates JJ/MM/AAAA, virgule decimale) et propose un export Excel mis en forme, ideal pour la comptabilite.",
+      },
+      {
+        question: "Les releves Fortuneo sont-ils faciles a convertir ?",
+        answer:
+          "Les releves PDF Fortuneo ont une mise en page epuree avec des colonnes clairement definies, ce qui facilite l'extraction. ReleveFacile gere neanmoins les specificites comme les operations carte regroupees en fin de mois, les libelles avec references SEPA et les virements instantanes.",
+      },
+    ],
   },
   "hello-bank": {
     slug: "hello-bank",
@@ -324,18 +378,72 @@ export const BANKS: Record<string, Bank> = {
     logo: "/banks/hello-bank.svg",
     isSupported: true,
     seoTitle: "Convertir un releve Hello bank! en Excel & CSV",
-    seoDescription: "Convertissez vos releves Hello bank! PDF en Excel et CSV.",
-    faq: [],
+    seoDescription:
+      "Convertissez vos releves Hello bank! (par BNP Paribas) PDF en Excel et CSV en quelques secondes. Extraction automatique des transactions, compatible avec tous les comptes Hello bank!.",
+    faq: [
+      {
+        question: "Comment convertir un releve Hello bank! en Excel ?",
+        answer:
+          "Deposez votre releve Hello bank! PDF sur ReleveFacile. L'outil detecte automatiquement le format Hello bank! (base sur le format BNP Paribas) et extrait toutes vos transactions pour generer un fichier Excel ou CSV en quelques secondes.",
+      },
+      {
+        question: "Quels formats de releves Hello bank! sont compatibles ?",
+        answer:
+          "ReleveFacile prend en charge les releves de compte courant Hello bank! (Hello One, Hello Prime, Hello Prime Duo), les releves de Livret Hello, et les releves de compte joint. Les releves mensuels telecharges depuis l'espace client ou l'application sont tous compatibles.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis Hello bank! ?",
+        answer:
+          "Connectez-vous sur hellobankpro.fr ou sur l'application Hello bank!. Rendez-vous dans la section Documents > Releves de compte. Selectionnez la periode et telechargez le PDF. Les releves sont egalement accessibles depuis l'espace BNP Paribas si vous avez lie vos comptes.",
+      },
+      {
+        question: "Les releves Hello bank! et BNP Paribas sont-ils identiques ?",
+        answer:
+          "Hello bank! est une filiale de BNP Paribas et les releves partagent une structure similaire. Cependant, la mise en page et certains libelles different (mention Hello bank! au lieu de BNP Paribas, codes operations specifiques). ReleveFacile distingue les deux formats et applique le bon traitement pour chacun.",
+      },
+      {
+        question: "Les releves Hello bank! posent-ils des difficultes de conversion ?",
+        answer:
+          "Les releves Hello bank! heritent du format structure de BNP Paribas, ce qui facilite l'extraction. ReleveFacile gere les specificites comme les operations Apple Pay et Google Pay avec leurs libelles particuliers, les virements instantanes, et les prelevements SEPA avec references longues.",
+      },
+    ],
   },
-  "cic": {
+  cic: {
     slug: "cic",
     name: "CIC",
     bic: "CMCIFRPP",
     logo: "/banks/cic.svg",
     isSupported: true,
     seoTitle: "Convertir un releve CIC en Excel & CSV",
-    seoDescription: "Convertissez vos releves CIC PDF en Excel et CSV.",
-    faq: [],
+    seoDescription:
+      "Convertissez vos releves CIC (Credit Industriel et Commercial) PDF en Excel et CSV en quelques secondes. Extraction automatique des operations, compatible comptes particuliers et professionnels.",
+    faq: [
+      {
+        question: "Comment convertir un releve CIC en Excel ?",
+        answer:
+          "Deposez votre releve CIC au format PDF sur ReleveFacile. L'outil detecte automatiquement le format CIC et extrait chaque operation avec sa date, son libelle et son montant. Vous obtenez un fichier Excel ou CSV propre, pret pour votre comptabilite ou vos analyses financieres.",
+      },
+      {
+        question: "Quels types de releves CIC sont pris en charge ?",
+        answer:
+          "ReleveFacile gere les releves de compte courant CIC (particuliers et professionnels), les releves de compte joint, les releves de compte epargne et les releves de Livret A CIC. Les releves mensuels et trimestriels sont tous compatibles.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis le CIC en ligne ?",
+        answer:
+          "Connectez-vous sur cic.fr, puis allez dans Comptes > Releves en ligne. Selectionnez le compte et la periode. Cliquez sur le releve pour le telecharger au format PDF. Vous pouvez aussi acceder a vos releves depuis l'application mobile CIC.",
+      },
+      {
+        question: "Les releves CIC et Credit Mutuel sont-ils traites de la meme maniere ?",
+        answer:
+          "Le CIC et le Credit Mutuel appartiennent au meme groupe mais leurs releves PDF ont des formats distincts (en-tetes, disposition des colonnes, polices). ReleveFacile detecte automatiquement s'il s'agit d'un releve CIC ou Credit Mutuel et applique le parseur adapte pour une extraction optimale.",
+      },
+      {
+        question: "Quelles specificites du format CIC ReleveFacile gere-t-il ?",
+        answer:
+          "Les releves CIC presentent des particularites comme les operations carte bancaire regroupees par date d'arret, les libelles avec references longues (numeros de cheques, references SEPA), et les totaux de page. ReleveFacile reconstruit chaque transaction individuellement et gere correctement la pagination des operations.",
+      },
+    ],
   },
   hsbc: {
     slug: "hsbc",
@@ -344,8 +452,153 @@ export const BANKS: Record<string, Bank> = {
     logo: "/banks/hsbc.svg",
     isSupported: false,
     seoTitle: "Convertir un releve HSBC France en Excel & CSV",
-    seoDescription: "Convertissez vos releves HSBC France PDF en Excel et CSV.",
-    faq: [],
+    seoDescription:
+      "Convertissez vos releves HSBC France (desormais My Money Group / CCF) PDF en Excel et CSV. Support en cours de developpement pour les anciens formats HSBC et le nouveau format CCF.",
+    faq: [
+      {
+        question: "Comment convertir un releve HSBC France en Excel ?",
+        answer:
+          "Le support complet de HSBC France est en cours de developpement sur ReleveFacile. Vous pouvez deja deposer votre releve HSBC PDF pour tenter une extraction automatique via notre parseur generique. Les resultats peuvent varier selon le format de votre releve.",
+      },
+      {
+        question: "Les releves de l'ancien HSBC France et du nouveau CCF sont-ils compatibles ?",
+        answer:
+          "HSBC France a ete rachetee par My Money Group et renommee CCF en 2024. Les formats de releves ont change lors de cette transition. ReleveFacile travaille sur la compatibilite avec les deux formats : les anciens releves HSBC France et les nouveaux releves CCF.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis HSBC France / CCF ?",
+        answer:
+          "Si vous etes un ancien client HSBC France, connectez-vous sur l'espace CCF (ccf.fr) qui a remplace l'espace client HSBC. Allez dans Documents > Releves pour telecharger vos releves au format PDF. Les releves anterieurs a la migration peuvent etre dans un format different.",
+      },
+      {
+        question: "Pourquoi le support HSBC France n'est-il pas encore complet ?",
+        answer:
+          "Le format des releves HSBC France est plus complexe que celui des autres banques francaises : colonnes en anglais et en francais, formats de montant specifiques, et la transition vers CCF a introduit un nouveau format. Notre equipe travaille a finaliser un parseur dedie pour couvrir ces cas.",
+      },
+      {
+        question: "Que faire en attendant le support complet de HSBC France ?",
+        answer:
+          "Vous pouvez essayer de convertir votre releve HSBC via ReleveFacile : notre parseur generique tente d'extraire les transactions de tout format PDF bancaire. Si le resultat n'est pas satisfaisant, vous serez notifie par email des que le parseur dedie HSBC France / CCF sera disponible.",
+      },
+    ],
+  },
+  n26: {
+    slug: "n26",
+    name: "N26",
+    bic: "NTSBDEB1",
+    logo: "/banks/n26.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve N26 en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves N26 PDF en Excel et CSV. Support en cours de developpement pour la neobanque allemande presente en France.",
+    faq: [
+      {
+        question: "Comment convertir un releve N26 en Excel ?",
+        answer: "Le support N26 est en cours de developpement. En attendant, vous pouvez tenter une conversion avec notre parseur generique en deposant votre releve PDF sur ReleveFacile.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis N26 ?",
+        answer: "Ouvrez l'application N26, allez dans Mon Compte > Releves. Selectionnez le mois souhaite et telechargez le releve au format PDF.",
+      },
+      {
+        question: "N26 propose deja un export CSV, pourquoi utiliser ReleveFacile ?",
+        answer: "L'export CSV de N26 utilise le format international (separateur virgule, point decimal). ReleveFacile le convertit en format francais compatible avec Excel FR et les logiciels comptables francais.",
+      },
+    ],
+  },
+  revolut: {
+    slug: "revolut",
+    name: "Revolut",
+    bic: "REVOGB21",
+    logo: "/banks/revolut.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve Revolut en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves Revolut PDF en Excel et CSV au format francais. Support en cours de developpement pour la neobanque Revolut.",
+    faq: [
+      {
+        question: "Comment convertir un releve Revolut en Excel ?",
+        answer: "Le support Revolut est en cours de developpement. Vous pouvez tenter une conversion avec notre parseur generique en deposant votre releve PDF sur ReleveFacile.",
+      },
+      {
+        question: "Comment telecharger un releve PDF depuis Revolut ?",
+        answer: "Dans l'application Revolut, allez dans Profil > Documents > Releves. Selectionnez le mois et telechargez le PDF. Les releves sont aussi accessibles depuis app.revolut.com.",
+      },
+      {
+        question: "Les releves Revolut en plusieurs devises sont-ils pris en charge ?",
+        answer: "ReleveFacile se concentre sur les transactions en euros. Les releves multi-devises Revolut seront traites en extrayant uniquement les operations en EUR dans un premier temps.",
+      },
+    ],
+  },
+  qonto: {
+    slug: "qonto",
+    name: "Qonto",
+    bic: "QNTOFRP1",
+    logo: "/banks/qonto.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve Qonto en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves Qonto PDF en Excel et CSV. Ideal pour les TPE, startups et freelances utilisant le compte pro Qonto.",
+    faq: [
+      {
+        question: "Comment convertir un releve Qonto en Excel ?",
+        answer: "Le support Qonto est en cours de developpement. En attendant, tentez une conversion avec notre parseur generique. Qonto propose aussi un export CSV natif que vous pouvez utiliser.",
+      },
+      {
+        question: "Pourquoi convertir un releve Qonto alors que Qonto a des integrations comptables ?",
+        answer: "Qonto propose des integrations avec certains logiciels comptables, mais pas tous. ReleveFacile offre un format CSV universel compatible avec n'importe quel logiciel francais, et un export Excel mis en forme pour vos archives.",
+      },
+    ],
+  },
+  shine: {
+    slug: "shine",
+    name: "Shine",
+    logo: "/banks/shine.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve Shine en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves Shine (Societe Generale) PDF en Excel et CSV. Pour les freelances et auto-entrepreneurs utilisant le compte pro Shine.",
+    faq: [
+      {
+        question: "Comment convertir un releve Shine en Excel ?",
+        answer: "Le support Shine est en cours de developpement. Shine, filiale de la Societe Generale, utilise un format specifique. Vous pouvez tenter une conversion avec notre parseur generique.",
+      },
+      {
+        question: "Shine est-il different de la Societe Generale pour la conversion ?",
+        answer: "Oui, les releves Shine ont un format different de ceux de la Societe Generale classique. Un parseur dedie est en cours de developpement pour gerer les specificites du format Shine.",
+      },
+    ],
+  },
+  monabanq: {
+    slug: "monabanq",
+    name: "Monabanq",
+    bic: "CMCIFRPP",
+    logo: "/banks/monabanq.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve Monabanq en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves Monabanq (filiale du Credit Mutuel) PDF en Excel et CSV. Support en cours de developpement.",
+    faq: [
+      {
+        question: "Comment convertir un releve Monabanq en Excel ?",
+        answer: "Le support Monabanq est en cours de developpement. Monabanq etant une filiale du Credit Mutuel, le format est similaire. Vous pouvez tenter une conversion avec notre parseur generique ou celui du Credit Mutuel.",
+      },
+    ],
+  },
+  nickel: {
+    slug: "nickel",
+    name: "Nickel",
+    logo: "/banks/nickel.svg",
+    isSupported: false,
+    seoTitle: "Convertir un releve Nickel en Excel & CSV",
+    seoDescription:
+      "Convertissez vos releves Nickel (par BNP Paribas) PDF en Excel et CSV. Support en cours de developpement pour le compte sans banque.",
+    faq: [
+      {
+        question: "Comment convertir un releve Nickel en Excel ?",
+        answer: "Le support Nickel est en cours de developpement. Nickel etant une filiale de BNP Paribas, le format partage certaines similarites. Vous pouvez tenter une conversion avec notre parseur generique.",
+      },
+    ],
   },
 };
 
