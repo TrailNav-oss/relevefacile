@@ -58,3 +58,5 @@ parser/.venv/
 .vscode/
 *.swp
 *.swo
+
+.vercel

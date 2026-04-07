@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { stripe } from "@/lib/stripe/client";
+import { getStripe } from "@/lib/stripe/client";
 import { STRIPE_PRICES } from "@/lib/stripe/plans";
 import type { Plan } from "@/lib/types";
 import { NextResponse } from "next/server";
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   let customerId = profile?.stripe_customer_id;
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email: profile?.email || user.email,
       metadata: { supabase_user_id: user.id },
     });
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: STRIPE_PRICES[plan as Exclude<Plan, "free">], quantity: 1 }],
