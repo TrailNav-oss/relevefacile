@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
   // Quota check for free plan (skipped in demo mode)
   const demoMode = process.env.DEMO_MODE === "true";
+  console.log("[CONVERT] quota check:", { demoMode, plan: profile.plan, count: profile.conversions_this_month, DEMO_MODE_RAW: process.env.DEMO_MODE });
   if (!demoMode && profile.plan === "free" && profile.conversions_this_month >= 3) {
     return NextResponse.json(
       { error: "Quota mensuel atteint (3 conversions). Passez au Pro pour des conversions illimitees.", upgrade: true },
