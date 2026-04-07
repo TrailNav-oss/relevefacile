@@ -36,7 +36,7 @@ export function TransactionPreview({ result, maxRows = -1, showWatermark }: Tran
         <span className="text-gray-500">{result.pageCount} pages</span>
       </div>
 
-      {showWatermark && (
+      {showWatermark && truncated && (
         <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2 text-xs text-yellow-700">
           Version gratuite &mdash; {maxRows} transactions affichees sur {result.transactionCount}.{" "}
           <a href="/tarifs" className="underline font-medium">
