@@ -82,11 +82,34 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error("Conversion error:", err);
-    const message = err instanceof Error ? err.message : "";
-    if (message.includes("unreachable") || message.includes("502") || message.includes("503")) {
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : undefined;
+    console.error("[CONVERT ERROR]", JSON.stringify({
+      userId: user.id,
+      fileName: file.name,
+      fileSize: file.size,
+      error: message,
+      stack,
+      parserUrl: process.env.PARSER_SERVICE_URL,
+      duration: Date.now() - startTime,
+    }));
+
+    // Log failed conversion attempt in DB for monitoring
+    try {
+      await supabase.from("conversion_logs").insert({
+        user_id: user.id,
+        bank_slug: "error",
+        page_count: 0,
+        transaction_count: 0,
+        export_format: "none",
+        processing_time_ms: Date.now() - startTime,
+        source: "web",
+      });
+    } catch { /* Don't fail if logging fails */ }
+
+    if (message.includes("unreachable") || message.includes("502") || message.includes("503") || message.includes("fetch failed")) {
       return NextResponse.json(
-        { error: "Le service d'analyse est temporairement indisponible. Reessayez dans quelques instants." },
+        { error: "Le service d'analyse est temporairement indisponible (demarrage en cours). Reessayez dans 10 secondes." },
         { status: 503 },
       );
     }
