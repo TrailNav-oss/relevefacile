@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialite",
+  description:
+    "Politique de confidentialite de ReleveFacile. Vos releves bancaires ne sont jamais stockes. Traitement conforme au RGPD.",
 };
 
 export default function PrivacyPage() {

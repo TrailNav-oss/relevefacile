@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Conditions generales d'utilisation",
+  description:
+    "Conditions generales d'utilisation de ReleveFacile, service de conversion de releves bancaires PDF en Excel et CSV.",
 };
 
 export default function CGUPage() {

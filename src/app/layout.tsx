@@ -14,6 +14,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: {
     default: "ReleveFacile — Convertissez vos releves bancaires PDF en Excel & CSV",
@@ -21,11 +23,19 @@ export const metadata: Metadata = {
   },
   description:
     "Convertissez vos releves de compte bancaire PDF en fichiers Excel et CSV en quelques secondes. Compatible avec toutes les banques francaises.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
     locale: "fr_FR",
     siteName: "ReleveFacile",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -36,6 +46,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+          <script
+            defer
+            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+          />
+        )}
+      </head>
       <body className="min-h-full flex flex-col">
         <Header />
         {children}

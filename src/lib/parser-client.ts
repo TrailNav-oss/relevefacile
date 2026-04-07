@@ -1,10 +1,35 @@
 import { PARSER_SERVICE_URL, PARSER_API_KEY } from "./config";
-import type { ParseResult } from "./types";
+import type { ParseResult, Transaction } from "./types";
 
 interface DetectResult {
   bankSlug: string;
   bankName: string;
   confidence: number;
+}
+
+// Python API returns snake_case — transform to camelCase for the frontend
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function transformParseResult(raw: any): ParseResult {
+  return {
+    bankSlug: raw.bank_slug,
+    bankName: raw.bank_name,
+    confidence: raw.confidence,
+    account: raw.account,
+    period: raw.period ? { from: raw.period.start, to: raw.period.end } : undefined,
+    transactions: raw.transactions.map(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (tx: any): Transaction => ({
+        date: tx.date,
+        valueDate: tx.value_date,
+        label: tx.label,
+        amount: tx.amount,
+        balance: tx.balance,
+        category: tx.category,
+      }),
+    ),
+    pageCount: raw.page_count,
+    transactionCount: raw.transaction_count,
+  };
 }
 
 export async function detectBank(pdfBuffer: Uint8Array): Promise<DetectResult> {
@@ -21,7 +46,8 @@ export async function detectBank(pdfBuffer: Uint8Array): Promise<DetectResult> {
     throw new Error(`Parser service error: ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  const raw = await response.json();
+  return { bankSlug: raw.bank_slug, bankName: raw.bank_name, confidence: raw.confidence };
 }
 
 export async function parsePdf(pdfBuffer: Uint8Array, bankSlug?: string): Promise<ParseResult> {
@@ -41,5 +67,6 @@ export async function parsePdf(pdfBuffer: Uint8Array, bankSlug?: string): Promis
     throw new Error(`Parser service error: ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  const raw = await response.json();
+  return transformParseResult(raw);
 }
