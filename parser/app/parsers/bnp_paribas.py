@@ -1,7 +1,14 @@
 import re
 
 from app.models import AccountInfo, ParseResult, Period, Transaction
-from app.parsers.base import BankParser, parse_french_amount
+from app.parsers.base import (
+    BankParser,
+    format_date,
+    identify_table_columns,
+    is_summary_line,
+    parse_french_amount,
+    parse_table_row,
+)
 
 
 class BNPParibasParser(BankParser):
@@ -25,73 +32,31 @@ class BNPParibasParser(BankParser):
 
         for page in pages:
             text = page.extract_text() or ""
-            lines = text.split("\n")
 
-            for line in lines:
-                # Try to extract account holder from header
-                if not account_info.holder:
-                    holder_match = re.search(r"(?:Titulaire|Client)\s*:\s*(.+)", line, re.IGNORECASE)
-                    if holder_match:
-                        account_info.holder = holder_match.group(1).strip()
+            self._extract_header(text, account_info)
+            ps, pe, yr = self._extract_period(text)
+            if ps:
+                period_start, period_end = ps, pe
+            if yr:
+                current_year = yr
 
-                # Try to extract account number
-                if not account_info.number:
-                    num_match = re.search(r"(?:Compte|N°)\s*[:\s]*(\d[\d\s]{5,})", line)
-                    if num_match:
-                        account_info.number = num_match.group(1).strip()[-4:]  # Keep only last 4 digits
+            # Try table-based extraction first
+            for table in page.extract_tables() or []:
+                if not table or len(table) < 2:
+                    continue
+                cols = identify_table_columns(table[0])
+                if "date" not in cols:
+                    continue
+                for row in table[1:]:
+                    tx = parse_table_row(row, cols, current_year or "2025")
+                    if tx:
+                        transactions.append(tx)
 
-                # Try to extract period
-                period_match = re.search(
-                    r"(?:du|periode)\s+(\d{2}[./]\d{2}[./]\d{4})\s+(?:au|à)\s+(\d{2}[./]\d{2}[./]\d{4})",
-                    line,
-                    re.IGNORECASE,
-                )
-                if period_match:
-                    period_start = self._parse_date(period_match.group(1))
-                    period_end = self._parse_date(period_match.group(2))
-                    if period_end:
-                        current_year = period_end[:4]
+            # Fallback: text-based extraction if no tables found
+            if not transactions:
+                self._parse_text(text, transactions, current_year)
 
-                # Extract year from date headers
-                year_match = re.search(r"(\d{4})", line)
-                if year_match and not current_year:
-                    candidate = year_match.group(1)
-                    if 2000 <= int(candidate) <= 2099:
-                        current_year = candidate
-
-                # Try to parse transaction lines
-                # Common BNP format: DD/MM  LABEL  AMOUNT
-                tx_match = re.match(
-                    r"\s*(\d{2}[./]\d{2})\s+(.+?)\s+([\d\s,.+-]+)\s*$",
-                    line,
-                )
-                if tx_match:
-                    date_str = tx_match.group(1)
-                    label = tx_match.group(2).strip()
-                    amount_str = tx_match.group(3).strip()
-
-                    # Skip summary/total lines
-                    if self._is_summary_line(label):
-                        continue
-
-                    amount = parse_french_amount(amount_str)
-                    if amount == 0.0:
-                        continue
-
-                    iso_date = self._parse_short_date(date_str, current_year)
-
-                    transactions.append(
-                        Transaction(
-                            date=iso_date,
-                            label=label,
-                            amount=amount,
-                            category="credit" if amount > 0 else "debit",
-                        )
-                    )
-
-        period = None
-        if period_start and period_end:
-            period = Period(start=period_start, end=period_end)
+        period = Period(start=period_start, end=period_end) if period_start and period_end else None
 
         return ParseResult(
             bank_slug=self.slug,
@@ -100,35 +65,61 @@ class BNPParibasParser(BankParser):
             account=account_info if account_info.holder or account_info.number else None,
             period=period,
             transactions=transactions,
-            page_count=0,
-            transaction_count=0,
+            page_count=len(pages),
+            transaction_count=len(transactions),
         )
 
-    def _parse_date(self, date_str: str) -> str:
-        """Convert DD/MM/YYYY or DD.MM.YYYY to ISO 8601."""
-        parts = re.split(r"[./]", date_str)
-        if len(parts) == 3:
-            return f"{parts[2]}-{parts[1]}-{parts[0]}"
-        return date_str
+    def _extract_header(self, text: str, account: AccountInfo) -> None:
+        if not account.holder:
+            m = re.search(r"(?:Titulaire|Client)\s*:\s*(.+)", text, re.IGNORECASE)
+            if m:
+                account.holder = m.group(1).strip()
+        if not account.number:
+            m = re.search(r"(?:Compte|N[°o])\s*[:\s]*([\d\s]{10,})", text, re.IGNORECASE)
+            if m:
+                account.number = m.group(1).strip()[-4:]
 
-    def _parse_short_date(self, date_str: str, year: str) -> str:
-        """Convert DD/MM to ISO 8601 using the given year."""
-        parts = re.split(r"[./]", date_str)
-        if len(parts) == 2 and year:
-            return f"{year}-{parts[1]}-{parts[0]}"
-        return date_str
+    def _extract_period(self, text: str) -> tuple[str | None, str | None, str]:
+        m = re.search(
+            r"(?:du|[Pp].riode)\s+(\d{2}[./]\d{2}[./]\d{4})\s+(?:au|.)\s+(\d{2}[./]\d{2}[./]\d{4})",
+            text, re.IGNORECASE,
+        )
+        if m:
+            ps = format_date(m.group(1), "")
+            pe = format_date(m.group(2), "")
+            return ps, pe, pe[:4]
+        return None, None, ""
 
-    def _is_summary_line(self, label: str) -> bool:
-        """Check if a line is a summary/total that should not be parsed as a transaction."""
-        summary_patterns = [
-            r"SOLDE\s+(CREDITEUR|DEBITEUR)",
-            r"TOTAL\s+DES",
-            r"NOUVEAU\s+SOLDE",
-            r"ANCIEN\s+SOLDE",
-            r"SOLDE\s+AU",
-            r"CUMUL",
-        ]
-        for pattern in summary_patterns:
-            if re.search(pattern, label, re.IGNORECASE):
-                return True
-        return False
+    def _parse_text(self, text: str, transactions: list[Transaction], year: str) -> None:
+        """Fallback text-based parsing for PDFs without table structure."""
+        for line in text.split("\n"):
+            tx_match = re.match(
+                r"\s*(\d{2}[./]\d{2})\s+(.+?)\s+([\d\s,.+-]+)\s*$",
+                line,
+            )
+            if not tx_match:
+                continue
+
+            date_str = tx_match.group(1)
+            label = tx_match.group(2).strip()
+            amount_str = tx_match.group(3).strip()
+
+            if is_summary_line(label):
+                continue
+            if len(label) < 3:
+                continue
+
+            amount = parse_french_amount(amount_str)
+            if amount == 0.0:
+                continue
+
+            iso_date = format_date(date_str, year or "2025")
+
+            transactions.append(
+                Transaction(
+                    date=iso_date,
+                    label=label,
+                    amount=amount,
+                    category="credit" if amount > 0 else "debit",
+                )
+            )
