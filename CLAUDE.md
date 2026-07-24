@@ -477,3 +477,20 @@ Creer un compte test via le dashboard Supabase :
 5. **Registry** : tout nouveau parser doit etre enregistre dans `parser/app/parsers/registry.py`.
 6. **banks.ts** : tout nouveau parser doit avoir une entree dans `src/data/banks.ts` pour le SSG.
 7. **Pas de secrets en dur** : utiliser les variables d'environnement via `.env`.
+
+---
+
+## Claude Bridge — Interaction avec l'app mobile TrailNav
+
+Le **Claude Bridge** permet d'interagir avec l'app mobile TrailNav sur un device Android (emulateur ou Pixel 8a) via `adb`.
+Utile pour : screenshots, navigation UI, logs, assertions visuelles, GPS mock.
+
+```bash
+# Depuis n'importe quel projet :
+node D:/Dev/GPS-off/v0.4.1-GPT/scripts/claude-bridge.js <commande>
+```
+
+Commandes principales : `shot`, `tap-on "texte"`, `assert "texte"`, `logs`, `info`, `multi "cmd1 && cmd2"`.
+
+**Guide complet :** `D:/Dev/CLAUDE_BRIDGE_GUIDE.md`
+**Ref detaillee (38 commandes) :** `D:/Dev/GPS-off/v0.4.1-GPT/docs/CLAUDE_BRIDGE.md`
